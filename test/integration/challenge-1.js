@@ -25,7 +25,7 @@ describe('challenge 1', () => {
 
   it('can find times if no conflicts', async () => {
     const start = moment('1990-01-01T01:00:00').toISOString();
-    const end = moment('1990-01-01T02:00:00').toISOString();
+    const end = moment('1990-01-01T20:00:00').toISOString();
     const userIds = USERS.map((x) => x.user_id);
 
     const response = await getAvailabilities(userIds, start, end);
@@ -40,9 +40,9 @@ describe('challenge 1', () => {
     });
   });
 
-  it.only('can honor the minimum attendees rule', async () => {
+  it('can honor the minimum attendees rule', async () => {
     const start = moment('1990-01-01T01:00:00').toISOString();
-    const end = moment('1990-01-01T02:00:00').toISOString();
+    const end = moment('1990-01-01T20:00:00').toISOString();
     const userIds = USERS.map((x) => x.user_id);
 
     const response = await getAvailabilities(userIds, start, end, {
@@ -55,16 +55,16 @@ describe('challenge 1', () => {
   });
 
   it('removes attendees with conflicts', async () => {
-    const event = USERS[0].events[0];
+    const event = USERS[1].events[3];
 
-    const start = moment(event.start);
-    const end = moment(event.end);
+    const start = moment(event.start).toISOString();
+    const end = moment(event.end).toISOString();
     const userIds = USERS.map((x) => x.user_id);
 
     const response = await getAvailabilities(userIds, start, end);
 
     const { availabilities } = response.body;
-    const expectedAttendees = difference(userIds, [USERS[0].user_id]);
+    const expectedAttendees = difference(userIds, [USERS[1].user_id]);
 
     expect(availabilities.length).to.be.at.least(1);
     availabilities.forEach(({ startedAt, endedAt, attendees }) => {
@@ -74,11 +74,11 @@ describe('challenge 1', () => {
     });
   });
 
-  it('accounts for minimum attendees wtih conflicts', async () => {
+  it('accounts for minimum attendees with conflicts', async () => {
     const event = USERS[0].events[0];
 
-    const start = moment(event.start);
-    const end = moment(event.end);
+    const start = moment(event.start).toISOString();
+    const end = moment(event.end).toISOString();
     const userIds = USERS.map((x) => x.user_id);
 
     const response = await getAvailabilities(userIds, start, end, {

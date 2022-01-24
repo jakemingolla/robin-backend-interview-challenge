@@ -9,7 +9,7 @@
     "local": "nodemon node src/index.js",
     "test": "npm-run-all test:*",
     "test:lint": "prettier --check .",
-    "test:integration": "mocha test/integration/**/*.js"
+    "test:integration": "mocha test/integration/**/*.js --exit"
   },
   "author": "Jake Mingolla",
   "license": "ISC",
@@ -17,6 +17,7 @@
     "body-parser": "^1.19.1",
     "bunyan": "^1.8.15",
     "express": "^4.17.2",
+    "get-timezone-offset": "^1.0.4",
     "lodash.difference": "^4.5.0",
     "moment": "^2.29.1",
     "mongodb": "^4.3.1"
