@@ -41,18 +41,10 @@ const deleteAllUsers = async () => {
   return makeAPIRequest('DELETE', '/v1/users');
 };
 
-const getAvailabilities = async (userIds, start, end, interval = null) => {
-  const query = {
-    user_ids: userIds,
-    start,
-    end,
-  };
-
-  console.log(query);
-
-  if (interval) {
-    query.interval = interval;
-  }
+const getAvailabilities = async (userIds, start, end, query = {}) => {
+  query.user_ids = userIds;
+  query.start = start;
+  query.end = end;
 
   return makeAPIRequest('GET', '/v1/availabilities', null, query);
 };
