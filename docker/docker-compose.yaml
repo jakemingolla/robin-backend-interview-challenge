@@ -1,0 +1,15 @@
+version: '3.7'
+services:
+  mongodb:
+    image: mongo:5.0.5
+    ports:
+      -  27017:27017
+    command: mongod --quiet --logpath /dev/null
+  api:
+    image: robin-backend-interview-challenge-api:dev
+    ports:
+      - 13778:13778
+    # NOTE: relative to the docker-compose.yaml file, not base dir
+    volumes:
+      - ../src:/app/src
+    command: npm run local
