@@ -1,6 +1,7 @@
 const bunyan = require('bunyan');
 const { MongoClient } = require('mongodb');
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const MONGO_CONNECTION_URL = 'mongodb://mongodb:27017';
 const MONGO_DATABASE_NAME = 'robin';
@@ -19,6 +20,8 @@ const prepareCore = async () => {
 
   const db = client.db(MONGO_DATABASE_NAME);
   const app = express();
+
+  app.use(bodyParser.json());
 
   return { log, db, app };
 };

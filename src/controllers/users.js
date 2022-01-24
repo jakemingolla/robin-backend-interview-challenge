@@ -1,22 +1,28 @@
 const usersModule = async () => {
   const { db, log } = await require('../core');
 
-  const upsertUser = (req, res) => {
-    console.log('hellO!');
+  const upsertUser = async (req, res) => {
+    const user = req.body;
+    const { user_id } = user;
 
-    return res.status(200).json({ message: 'yep' });
+    const result = await db
+      .collection('users')
+      .replaceOne({ user_id }, user, { upsert: true });
+
+    return res.status(result.upsertedCount === 1 ? 201 : 200).json(user);
   };
 
-  const getAllUsers = (req, res) => {
-    console.log('hellO!');
+  const getAllUsers = async (req, res) => {
+    const query = await db.collection('users').find({}).project({ _id: 0 });
+    const users = await query.toArray();
 
-    return res.json({ users: [] });
+    return res.status(200).json({ users });
   };
 
-  const deleteAllUsers = (req, res) => {
-    console.log('hellO!');
+  const deleteAllUsers = async (req, res) => {
+    await db.collection('users').deleteMany({}, { multi: true });
 
-    return res.json({ message: 'All users deleted.' });
+    return res.status(200).json({ message: 'All users deleted.' });
   };
 
   return { upsertUser, getAllUsers, deleteAllUsers };
