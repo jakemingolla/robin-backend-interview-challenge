@@ -82,14 +82,17 @@ const availabilitiesModule = async () => {
     let cutoff = now.clone().add(interval, 'minutes');
     let eventIndex = 0;
 
-    while (cutoff.isBefore(end)) {
+    while (cutoff.isSameOrBefore(end)) {
       const disqualifiedUserIds = new Set();
+
       events.forEach((event) => {
         if (disqualifiedUserIds.has(event.userId)) {
           return;
         } else if (
-          now.isBetween(event.start, event.end, null, '[]') ||
-          cutoff.isBetween(event.start, event.end, null, '[]')
+          // NOTE: Inclsive to the event start, but exclusive
+          // for all other calculations.
+          now.isBetween(event.start, event.end, null, '[)') ||
+          cutoff.isBetween(event.start, event.end, null, '[)')
         ) {
           disqualifiedUserIds.add(event.userId);
         }
@@ -99,29 +102,6 @@ const availabilitiesModule = async () => {
         const workingHoursStart = user.working_hours.start;
         const workingHoursEnd = user.working_hours.end;
         const workingHoursTimeZone = user.working_hours.time_zone;
-
-        /*
-        console.log(
-          'here',
-          user.user_id,
-          workingHoursStart,
-          workingHoursEnd,
-          workingHoursTimeZone,
-          now,
-          isBetweenWorkingHours(
-            now,
-            workingHoursStart,
-            workingHoursEnd,
-            workingHoursTimeZone
-          ),
-          isBetweenWorkingHours(
-            cutoff,
-            workingHoursStart,
-            workingHoursEnd,
-            workingHoursTimeZone
-          )
-        );
-        */
 
         if (
           !isBetweenWorkingHours(
@@ -146,13 +126,6 @@ const availabilitiesModule = async () => {
         Array.from(disqualifiedUserIds.values())
       );
 
-      /*
-      console.log('now', now);
-      console.log('cutoff', cutoff);
-      console.log('disqualified', disqualifiedUserIds.entries());
-      console.log('attendees', attendees);
-      */
-
       if (attendees.length >= minimumAttendees) {
         availabilities.push({
           attendees,
@@ -174,7 +147,10 @@ const availabilitiesModule = async () => {
     return res.status(200).json({ availabilities });
   };
 
-  return { getAvailabilities };
+  return {
+    getAvailabilities,
+    __test: { isBetweenWorkingHours },
+  };
 };
 
 module.exports = availabilitiesModule();

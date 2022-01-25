@@ -66,7 +66,7 @@ describe('challenge 2', () => {
 
   afterEach(() => deleteAllUsers);
 
-  it('can find times within hours if no conflicts', async () => {
+  it('can find times within working hours if no conflicts', async () => {
     const start = moment('1990-01-01T01:00:00').toISOString();
     const end = moment('1990-01-01T20:00:00').toISOString();
     const userIds = USERS.map((x) => x.user_id);
