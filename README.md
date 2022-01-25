@@ -122,8 +122,8 @@ Each availability window candidate is potentially tested against
 each user and each event to determine validity.
 
 ## Challenges
-From an implementation perspective, one hurdle when dealing with working
-hour calculations is the dependency I used to handle most of the timezone
+From an implementation perspective, one hurdle relates to dealing with working
+hour calculations for users. The dependency I used to handle most of the timezone
 manipulation and unification (`moment`) into UTC can handle _dates_ really well,
 but not _time ranges_ at all. For example, the range `09:00` to `17:00`
 in a given time zone is not able to be compared to a specific date with
@@ -131,8 +131,8 @@ any out-of-the box functions. I wrote my own function for this
 and broke it out into a unit-testable helper to help make sure it was valid.
 
 Additionally, I added a `minimum_attendees` request parameter to help
-mitigate a few different scenarios I imagined. There is no requested behavior
-for if a requested `user_id` does not match any known user. Instead of
+mitigate a few different scenarios I imagined. There is no defined behavior
+if a requested `user_id` does not match any known user. Instead of
 rejecting requests with erroneous requested user IDs, which could
 potentially happen if any client was out of sync with changes in user base,
 the `minimum_attendees` allows for a client to specify how 'full' they
@@ -149,8 +149,17 @@ of possible windows during a pre-processing stage. This could reduce
 the number of comparisons to a constant value rather than scaling
 on a per-user basis when calculating availability window attendance.
 
-Also, I _believe_ the example provided in the repository is incorrect.
-User 3 cannot work at 9 AM eastern as that is outside of their working hours.
+In addition, one potential speed-up at a cost of returning
+potentailly unoptimal results could be to change the algorithm
+to be greedy. Rather than enumerate all possible availabilities and
+select the top n best ones, we could instead just return the first n
+availability windows we find. This could potentially be configurable
+via a querystring parameter to provide client choice, especially
+when paired with the `minimum_attendees` parameter.
+
+Also, I _believe_ the example provided in challenge 3 of the
+parent repository is incorrect. User 3 cannot work at 9 AM eastern
+as it is outside of their working hours.
 
 ## TO-DOs
 - [ ] Generate OpenAPI routes and schemas via [an auto-generate tool](
