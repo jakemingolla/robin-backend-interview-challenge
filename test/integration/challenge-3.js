@@ -55,7 +55,7 @@ describe('challenge 3', () => {
     expect(availabilities[1].attendees).to.deep.equal([1, 2]);
 
     // Only 2 can meet at 3:15 PM for 15 minutes.
-    expect(availabilities[1].attendees).to.deep.equal([1, 2]);
+    expect(availabilities[2].attendees).to.deep.equal([2]);
   });
 
   it('can alter the interval dynamically', async () => {
